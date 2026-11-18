@@ -1,0 +1,13 @@
+/target/
+/dist/
+*.pdb
+*.ilk
+*.obj
+*.res
+*.tmp
+*.log
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

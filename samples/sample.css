@@ -1,0 +1,49 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe UI", "Microsoft YaHei UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #12263a, #1f4068);
+  color: #eef6ff;
+}
+
+.card {
+  width: min(720px, 90vw);
+  padding: 32px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th, td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  text-align: left;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 18px;
+  background: #4fc1ff;
+  color: #082238;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.result {
+  color: #8fe3a8;
+}
