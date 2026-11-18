@@ -44,7 +44,7 @@
 
 ## 安装
 
-从 [Releases](http://localhost:3000/han/NativeReader/releases) 下载 `NativeReader-Setup-0.1.1.exe`，双击运行即可。
+从 [Gitea Releases](http://localhost:3000/han/NativeReader/releases) 或 [GitHub Releases](https://github.com/HanFeng-wang/NativeReader/releases) 下载 `NativeReader-Setup-0.1.1.exe`，双击运行即可。
 
 - 按当前用户安装到 `%LOCALAPPDATA%\Programs\Native Reader`，无需管理员权限。
 - 安装向导可选择“全查看”“默认查看”“用户自定义查看”或“仅安装，不修改文件关联”。
