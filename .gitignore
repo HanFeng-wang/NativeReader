@@ -1,4 +1,5 @@
 /target/
+/target-static/
 /dist/
 *.pdb
 *.ilk

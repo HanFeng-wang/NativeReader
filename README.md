@@ -7,6 +7,7 @@
 ## 特点
 
 - **原生实现**：编译为单个 x64 可执行文件，界面直接使用 Windows 原生控件。
+- **无需额外运行库**：发布版静态链接 CRT，不要求安装 VC++ Redistributable、.NET、WebView2 或解释器运行时。
 - **适合大文件**：不启动浏览器内核；单文件读取上限 128 MB，500 KB 以上的 Markdown 或源码仍可流畅滚动和跳转。
 - **Markdown 预览与编辑**：支持标题、列表、引用、任务列表、表格、链接、行内代码和围栏代码块。
 - **AI 风格代码块**：独立灰底区域、左上角语言标签、右上角复制按钮。
@@ -27,7 +28,7 @@
 | UI | Win32 + RichEdit |
 | 渲染 | 自研 Markdown → RTF、语法高亮 → RichEdit |
 | 安装器 | Inno Setup 7 |
-| 运行时 | 无额外运行时，单个原生 EXE |
+| 运行时 | 静态链接 CRT，无额外运行时，单个原生 EXE |
 
 ## 功能支持
 
@@ -43,10 +44,11 @@
 
 ## 安装
 
-从 [Releases](http://localhost:3000/han/NativeReader/releases) 下载 `NativeReader-Setup-0.1.0.exe`，双击运行即可。
+从 [Releases](http://localhost:3000/han/NativeReader/releases) 下载 `NativeReader-Setup-0.1.1.exe`，双击运行即可。
 
 - 按当前用户安装到 `%LOCALAPPDATA%\Programs\Native Reader`，无需管理员权限。
 - 安装向导可选择“全查看”“默认查看”“用户自定义查看”或“仅安装，不修改文件关联”。
+- 支持 Windows 10 1703 及以上版本和 Windows 11，仅限 x64。安装器会阻止更低版本或 32 位系统继续安装。
 - Windows 10/11 可能保护已有的默认程序设置；安装器会注册“打开方式”，必要时引导你进入系统“默认应用”确认。
 - 安装包尚未购买代码签名证书，首次运行时可能出现 SmartScreen 提示。请对照 Release 中的 `SHA256SUMS.txt` 校验文件。
 
@@ -72,7 +74,7 @@
 
 ### 环境要求
 
-- Windows 10/11 x64
+- Windows 10 1703+ / Windows 11 x64
 - Rust stable，MSVC 工具链
 - Visual Studio Build Tools，安装“使用 C++ 的桌面开发”（提供 `rc.exe`）
 - [Inno Setup 7](https://jrsoftware.org/isinfo.php)（仅生成安装包时需要）
@@ -92,7 +94,7 @@ cargo build --release
 & 'C:\Program Files\Inno Setup 7\ISCC.exe' installer\native-reader.iss
 ```
 
-输出：`dist\NativeReader-Setup-0.1.0.exe`。
+输出：`dist\NativeReader-Setup-0.1.1.exe`。
 
 ## 目录结构
 

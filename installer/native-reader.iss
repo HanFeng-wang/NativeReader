@@ -1,5 +1,5 @@
 #define AppName "Native Reader"
-#define AppVersion "0.1.0"
+#define AppVersion "0.1.1"
 #define AppPublisher "Native Reader"
 
 [Setup]
@@ -14,6 +14,7 @@ DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
+MinVersion=10.0.15063
 OutputDir=..\dist
 OutputBaseFilename=NativeReader-Setup-{#AppVersion}
 SetupIconFile=..\assets\native-reader.ico
