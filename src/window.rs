@@ -39,8 +39,8 @@ use windows::Win32::UI::Input::KeyboardAndMouse::{
     VK_OEM_MINUS, VK_OEM_PLUS, VK_RETURN, VK_S, VK_SHIFT, VK_SUBTRACT, VK_T, VK_V, VK_W,
 };
 use windows::Win32::UI::Shell::{
-    DefSubclassProc, DragAcceptFiles, DragFinish, DragQueryFileW, SetWindowSubclass, ShellExecuteW,
-    HDROP,
+    AssocQueryStringW, DefSubclassProc, DragAcceptFiles, DragFinish, DragQueryFileW,
+    SetWindowSubclass, ShellExecuteW, ASSOCF_NONE, ASSOCSTR_EXECUTABLE, HDROP,
 };
 use windows::Win32::UI::WindowsAndMessaging::{
     AdjustWindowRect, AppendMenuW, CreateAcceleratorTableW, CreatePopupMenu, CreateWindowExW,
@@ -1395,30 +1395,34 @@ impl App {
         let Some(path) = self.doc.path.clone() else {
             return;
         };
-        let absolute = std::fs::canonicalize(&path).unwrap_or(path);
-        if self.shell_open_path(&absolute) {
+        let absolute = shell_visible_path(&path);
+        let Some(browser) = default_browser_executable() else {
+            self.show_error("无法确定系统默认浏览器，请在 Windows 默认应用中设置浏览器。");
+            return;
+        };
+        let browser = wide(&browser.to_string_lossy());
+        let arguments = wide(&format!("\"{}\"", absolute.display()));
+        let directory = absolute.parent().unwrap_or_else(|| Path::new(""));
+        let directory = wide(&directory.to_string_lossy());
+        let result = ShellExecuteW(
+            Some(self.hwnd),
+            w!("open"),
+            PCWSTR(browser.as_ptr()),
+            PCWSTR(arguments.as_ptr()),
+            PCWSTR(directory.as_ptr()),
+            SW_SHOWNORMAL,
+        );
+        if result.0 as isize <= 32 {
+            self.show_error(&format!(
+                "无法调用默认浏览器打开：{}（错误码 {}）",
+                absolute.display(),
+                result.0 as isize
+            ));
+        } else {
             self.status_message =
                 "已在默认浏览器打开；CSS、JS 和相对资源由浏览器加载。".to_string();
         }
         InvalidateRect(Some(self.hwnd), None, false);
-    }
-
-    unsafe fn shell_open_path(&self, path: &Path) -> bool {
-        let value = wide(&path.to_string_lossy());
-        let result = ShellExecuteW(
-            Some(self.hwnd),
-            w!("open"),
-            PCWSTR(value.as_ptr()),
-            PCWSTR::null(),
-            PCWSTR::null(),
-            SW_SHOWNORMAL,
-        );
-        if result.0 as isize <= 32 {
-            self.show_error(&format!("无法调用默认程序打开：{}", path.display()));
-            false
-        } else {
-            true
-        }
     }
 
     unsafe fn shell_open_url(&self, url: &str) -> bool {
@@ -2698,6 +2702,62 @@ fn to_colorref(color: Color) -> COLORREF {
 
 fn wide(text: &str) -> Vec<u16> {
     text.encode_utf16().chain(std::iter::once(0)).collect()
+}
+
+fn shell_visible_path(path: &Path) -> PathBuf {
+    let absolute = std::path::absolute(path).unwrap_or_else(|_| path.to_path_buf());
+    let text = absolute.to_string_lossy();
+    if let Some(rest) = text.strip_prefix(r"\\?\UNC\") {
+        PathBuf::from(format!(r"\\{}", rest))
+    } else if let Some(rest) = text.strip_prefix(r"\\?\") {
+        PathBuf::from(rest)
+    } else {
+        absolute
+    }
+}
+
+unsafe fn default_browser_executable() -> Option<PathBuf> {
+    let mut browser = query_default_browser(w!("http"));
+    if browser.is_none() {
+        browser = query_default_browser(w!("https"));
+    }
+    browser
+}
+
+unsafe fn query_default_browser(protocol: PCWSTR) -> Option<PathBuf> {
+    let mut length = 0u32;
+    let _ = AssocQueryStringW(
+        ASSOCF_NONE,
+        ASSOCSTR_EXECUTABLE,
+        protocol,
+        PCWSTR::null(),
+        None,
+        &mut length,
+    );
+    if length == 0 {
+        return None;
+    }
+    let mut buffer = vec![0u16; length as usize];
+    let result = AssocQueryStringW(
+        ASSOCF_NONE,
+        ASSOCSTR_EXECUTABLE,
+        protocol,
+        PCWSTR::null(),
+        Some(PWSTR(buffer.as_mut_ptr())),
+        &mut length,
+    );
+    if result.is_err() {
+        return None;
+    }
+    let end = buffer
+        .iter()
+        .position(|value| *value == 0)
+        .unwrap_or(buffer.len());
+    if end == 0 {
+        None
+    } else {
+        Some(PathBuf::from(String::from_utf16_lossy(&buffer[..end])))
+    }
 }
 
 unsafe fn set_cue_banner(hwnd: HWND, text: &str) {

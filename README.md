@@ -16,7 +16,7 @@
 - **查找替换**：`Ctrl+F` 查找、`F3` / `Shift+F3` 前后跳转，支持区分大小写、全字匹配、替换和全部替换。
 - **右键菜单**：复制、剪切、粘贴纯文本、撤销、全选、复制全文。
 - **状态栏**：显示行列号、文件类型、编码、文件大小、查看模式和修改状态。
-- **HTML 工作流**：在程序内编辑 HTML 源码；点击“浏览器预览”交给系统默认浏览器打开，相对 CSS 和 JavaScript 会正常加载。
+- **HTML 工作流**：在程序内编辑 HTML 源码；点击“浏览器预览”显式调用系统默认浏览器，相对 CSS 和 JavaScript 会正常加载，不受 `.html` 文件关联影响。
 - **多窗口**：可以同时打开多个窗口；同一路径只会激活已有窗口，避免重复编辑同一文件。
 - **其他**：浅色/深色主题、窗口置顶、字号缩放、拖拽打开、外部修改后自动重新加载。
 
@@ -44,7 +44,7 @@
 
 ## 安装
 
-从 [Gitea Releases](http://localhost:3000/han/NativeReader/releases) 或 [GitHub Releases](https://github.com/HanFeng-wang/NativeReader/releases) 下载 `NativeReader-Setup-0.1.1.exe`，双击运行即可。
+从 [Gitea Releases](http://localhost:3000/han/NativeReader/releases) 或 [GitHub Releases](https://github.com/HanFeng-wang/NativeReader/releases) 下载 `NativeReader-Setup-0.1.2.exe`，双击运行即可。
 
 - 按当前用户安装到 `%LOCALAPPDATA%\Programs\Native Reader`，无需管理员权限。
 - 安装向导可选择“全查看”“默认查看”“用户自定义查看”或“仅安装，不修改文件关联”。
@@ -94,7 +94,7 @@ cargo build --release
 & 'C:\Program Files\Inno Setup 7\ISCC.exe' installer\native-reader.iss
 ```
 
-输出：`dist\NativeReader-Setup-0.1.1.exe`。
+输出：`dist\NativeReader-Setup-0.1.2.exe`。
 
 ## 目录结构
 
@@ -114,7 +114,7 @@ NativeReader/
 ## 说明
 
 - Markdown 预览为只读；需要修改时按 `Ctrl+2` 切到源码。替换功能只在源码模式可用。
-- HTML 不在程序内嵌入浏览器，也不会执行页面脚本；点击“浏览器预览”后由默认浏览器加载 HTML 及其相对 CSS/JS。
+- HTML 不在程序内嵌入浏览器，也不会执行页面脚本；点击“浏览器预览”后会直接启动系统默认浏览器，并加载 HTML 及其相对 CSS/JS。
 - 同一路径已打开时再次打开该文件，会激活现有窗口，而不是创建第二个编辑器实例。
 
 ## 开源与致谢

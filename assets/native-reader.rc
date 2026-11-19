@@ -15,11 +15,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Native Reader"
             VALUE "FileDescription", "Native Reader - fast native text viewer"
-            VALUE "FileVersion", "0.1.1"
+            VALUE "FileVersion", "0.1.2"
             VALUE "InternalName", "native-reader"
             VALUE "OriginalFilename", "native-reader.exe"
             VALUE "ProductName", "Native Reader"
-            VALUE "ProductVersion", "0.1.1"
+            VALUE "ProductVersion", "0.1.2"
         END
     END
     BLOCK "VarFileInfo"
